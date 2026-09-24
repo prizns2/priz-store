@@ -86,7 +86,7 @@
           <h1>Новая<br>коллекция<br><em>FW 26</em></h1>
           <a class="btn btn-ghost" href="#/catalog/new">Смотреть новинки <span aria-hidden="true">→</span></a>
         </div>
-        <div class="hero-art" aria-hidden="true">${productArt(byId("apex-run-jacket"), 0, "hero-svg")}</div>
+        <div class="hero-art" aria-hidden="true"><img class="hero-photo" src="img/hero-model.jpg" alt="" loading="lazy"></div>
         <div class="hero-side">
           <p class="script">Не просто форма.<br>Новый уровень.</p>
           <div class="hero-mark">PRIZ<span>Люди</span><span>Места</span><span>Подход</span><span>Всегда вперёд</span></div>
@@ -109,9 +109,9 @@
           <p class="muted">Три сценария на один сезон: пробежка до рассвета, тренировка после работы и дорога домой в тёплом слое.</p>
           <a class="btn btn-outline" href="#/catalog/run">Собрать образ для бега <span aria-hidden="true">→</span></a>
         </div>
-        <a class="look look-a" href="#/catalog/run"><span class="look-tag">Рассвет</span><span class="look-name">Бег в 6:00</span></a>
-        <a class="look look-b" href="#/catalog/gym"><span class="look-tag">Вечер</span><span class="look-name">Зал после работы</span></a>
-        <a class="look look-c" href="#/catalog/men"><span class="look-tag">Город</span><span class="look-name">Дорога домой</span></a>
+        <a class="look look-a" href="#/catalog/run"><span class="look-index">01 / 03</span><span class="look-tag">Рассвет</span><span class="look-name">Бег в 6:00</span></a>
+        <a class="look look-b" href="#/catalog/gym"><span class="look-index">02 / 03</span><span class="look-tag">Вечер</span><span class="look-name">Зал после работы</span></a>
+        <a class="look look-c" href="#/catalog/men"><span class="look-index">03 / 03</span><span class="look-tag">Город</span><span class="look-name">Дорога домой</span></a>
       </div>
     </section>
 
