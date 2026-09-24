@@ -288,20 +288,9 @@
     </div></section>`;
   }
 
-  const DELIVERY = {
-    courier: { name: "Курьер по адресу", price: 150 },
-    post:    { name: "Отделение почты", price: 90 },
-    pickup:  { name: "Самовывоз", price: 0 }
-  };
-  let checkoutState = { delivery: "post" };
-
   function totals() {
     const sub = cart.reduce((s, l) => s + byId(l.id).price * l.qty, 0);
     return { sub, count: cart.reduce((s, l) => s + l.qty, 0) };
-  }
-  function shippingFor(sub, method) {
-    if (sub >= FREE_FROM) return 0;
-    return DELIVERY[method].price;
   }
 
   function viewCheckout() {
@@ -309,8 +298,6 @@
       return `<section class="page-head"><div class="wrap"><h1 class="display sm">Оформление заказа</h1></div></section>
         <section class="section tight"><div class="wrap"><div class="empty"><p>Корзина пуста. Добавьте товары, чтобы оформить заказ.</p><a class="btn btn-outline" href="#/catalog/all">В каталог</a></div></div></section>`;
     }
-    const t = totals();
-    const ship = shippingFor(t.sub, checkoutState.delivery);
     return `
     <section class="page-head"><div class="wrap">
       <p class="crumbs"><a href="#/">Главная</a> / <span>Оформление заказа</span></p>
@@ -319,25 +306,12 @@
       <form id="order-form" novalidate>
         <fieldset><legend class="label">Контакты</legend>
           <div class="field"><label for="f-name">Имя и фамилия</label><input id="f-name" name="name" autocomplete="name" required maxlength="100"><p class="field-error" data-for="name" hidden></p></div>
-          <div class="field"><label for="f-phone">Телефон</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+380 __ ___ __ __" required maxlength="30"><p class="field-error" data-for="phone" hidden></p></div>
-        </fieldset>
-        <fieldset><legend class="label">Доставка</legend>
-          <div class="radio-list">
-            ${Object.entries(DELIVERY).map(([k, v]) => `
-              <label class="radio ${checkoutState.delivery === k ? "on" : ""}">
-                <input type="radio" name="delivery" value="${k}" ${checkoutState.delivery === k ? "checked" : ""}>
-                <span>${v.name}</span><em>${v.price ? fmt(v.price) : "бесплатно"}</em>
-              </label>`).join("")}
-          </div>
-          <div id="address-block" ${checkoutState.delivery === "pickup" ? "hidden" : ""}>
-            <div class="field"><label for="f-city">Город</label><input id="f-city" name="city" autocomplete="address-level2" maxlength="100"><p class="field-error" data-for="city" hidden></p></div>
-            <div class="field"><label for="f-address">Адрес или номер отделения</label><input id="f-address" name="address" autocomplete="street-address" maxlength="300"><p class="field-error" data-for="address" hidden></p></div>
-          </div>
+          <div class="field"><label for="f-phone">Телефон</label><input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" value="+380 " required maxlength="17"><p class="field-error" data-for="phone" hidden></p></div>
         </fieldset>
         <fieldset><legend class="label">Комментарий</legend>
           <div class="field"><label for="f-comment">Пожелания к заказу (необязательно)</label><textarea id="f-comment" name="comment" rows="3" maxlength="500"></textarea></div>
         </fieldset>
-        <p class="muted small">Оплата при получении или переводом. Менеджер свяжется с вами для подтверждения заказа.</p>
+        <p class="muted small">Менеджер напишет вам в Telegram, чтобы уточнить детали, доставку и оплату.</p>
         <p class="field-error" id="form-error" hidden></p>
         <button class="btn btn-primary wide" type="submit" id="submit-btn">Подтвердить заказ</button>
       </form>
@@ -347,7 +321,6 @@
 
   function summaryHtml() {
     const t = totals();
-    const ship = shippingFor(t.sub, checkoutState.delivery);
     return `<h2 class="label">Ваш заказ</h2>
       <ul class="sum-list">${cart.map(l => {
         const p = byId(l.id);
@@ -357,8 +330,8 @@
       }).join("")}</ul>
       <dl class="sum-total">
         <div><dt>Товары</dt><dd>${fmt(t.sub)}</dd></div>
-        <div><dt>Доставка</dt><dd>${ship ? fmt(ship) : "бесплатно"}</dd></div>
-        <div class="grand"><dt>Итого</dt><dd>${fmt(t.sub + ship)}</dd></div>
+        <div><dt>Доставка</dt><dd>по договорённости</dd></div>
+        <div class="grand"><dt>Итого</dt><dd>${fmt(t.sub)}</dd></div>
       </dl>`;
   }
 
@@ -481,13 +454,13 @@
   /* ---------- заказ ---------- */
   async function placeOrder(data) {
     const t = totals();
-    const ship = shippingFor(t.sub, data.delivery);
-    const id = (crypto.randomUUID ? crypto.randomUUID() : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 3 | 8)).toString(16); }));
+    const phone = "+380" + phoneDigits(data.phone);
+    const id =(crypto.randomUUID ? crypto.randomUUID() : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 3 | 8)).toString(16); }));
     const no = "PZ-" + id.replace(/-/g, "").slice(0, 6).toUpperCase();
     const order = {
-      id, order_no: no, customer_name: data.name, phone: data.phone,
-      city: data.city || null, delivery: data.delivery, address: data.address || null,
-      comment: data.comment || null, total: t.sub + ship
+      id, order_no: no, customer_name: data.name.trim(), phone,
+      city: null, delivery: "tbd", address: null,
+      comment: data.comment || null, total: t.sub
     };
     const items = cart.map(l => ({
       order_id: id, product_id: l.id, product_name: byId(l.id).name,
@@ -504,32 +477,42 @@
       if (!r1.ok) throw new Error("orders " + r1.status);
       const r2 = await fetch(base + "shop_order_items", { method: "POST", headers, body: JSON.stringify(items) });
       if (!r2.ok) throw new Error("items " + r2.status);
+      fetch(CFG.SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/notify-order", {
+        method: "POST", headers: { apikey: CFG.SUPABASE_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ order_id: id }), keepalive: true
+      }).catch(() => { /* заказ уже сохранён, уведомление не критично */ });
     } else {
       const all = store.get("priz_orders", []);
       all.push({ ...order, items, created_at: new Date().toISOString() });
       store.set("priz_orders", all);
     }
-    const deliveryName = { courier: "Курьер", post: "Отделение почты", pickup: "Самовывоз" }[data.delivery] || data.delivery;
     const lines = items.map(i => `• ${i.product_name}, ${i.color}, ${i.size} × ${i.qty} — ${fmt(i.price * i.qty)}`);
     const tgText = [
       `Здравствуйте! Мой заказ ${no}:`, ...lines,
-      `Доставка: ${deliveryName}${data.city ? ", " + data.city : ""}${data.address ? ", " + data.address : ""}`,
       `Итого: ${fmt(order.total)}`,
-      `${data.name}, ${data.phone}`
+      `${order.customer_name}, ${phone}`
     ].join("\n");
-    return { no, name: data.name, phone: data.phone, tgText, demo: !(CFG.SUPABASE_URL && CFG.SUPABASE_KEY) };
+    return { no, name: order.customer_name, phone, tgText, demo: !(CFG.SUPABASE_URL && CFG.SUPABASE_KEY) };
   }
 
   function validate(form) {
     const f = Object.fromEntries(new FormData(form).entries());
     const errs = {};
     if ((f.name || "").trim().length < 2) errs.name = "Введите имя и фамилию.";
-    if ((f.phone || "").replace(/\D/g, "").length < 9) errs.phone = "Введите номер телефона, минимум 9 цифр.";
-    if (f.delivery !== "pickup") {
-      if (!(f.city || "").trim()) errs.city = "Укажите город.";
-      if (!(f.address || "").trim()) errs.address = "Укажите адрес или номер отделения.";
-    }
+    if (phoneDigits(f.phone).length < 9) errs.phone = "Введите номер полностью: +380 и ещё 9 цифр.";
     return { f, errs };
+  }
+
+  function phoneDigits(v) {
+    let d = String(v || "").replace(/\D/g, "");
+    if (d.startsWith("380")) d = d.slice(3);
+    else if (d.startsWith("0")) d = d.slice(1);
+    return d.slice(0, 9);
+  }
+  function formatPhone(v) {
+    const d = phoneDigits(v);
+    const parts = [d.slice(0, 2), d.slice(2, 5), d.slice(5, 7), d.slice(7, 9)].filter(Boolean);
+    return "+380 " + parts.join(" ");
   }
 
   /* ---------- события ---------- */
@@ -598,12 +581,27 @@
       if (s.dataset.size) n.set("size", s.dataset.size);
       location.hash = s.dataset.base.replace(/^#/, "") + (n.toString() ? "?" + n : "");
     }
-    if (e.target.name === "delivery") {
-      checkoutState.delivery = e.target.value;
-      $$(".radio").forEach(r => r.classList.toggle("on", $("input", r).checked));
-      $("#address-block").hidden = e.target.value === "pickup";
-      $("#summary").innerHTML = summaryHtml();
-    }
+  });
+
+  document.addEventListener("input", e => {
+    if (e.target.id !== "f-phone") return;
+    e.target.value = formatPhone(e.target.value);
+  });
+  document.addEventListener("keydown", e => {
+    if (e.target.id !== "f-phone") return;
+    const el = e.target;
+    const locked = 5;
+    if ((e.key === "Backspace" && el.selectionStart <= locked && el.selectionStart === el.selectionEnd) ||
+        (e.key === "Delete" && el.selectionStart < locked)) e.preventDefault();
+  });
+  document.addEventListener("focusin", e => {
+    if (e.target.id !== "f-phone") return;
+    const el = e.target;
+    setTimeout(() => { if (el.selectionStart < 5) el.setSelectionRange(el.value.length, el.value.length); }, 0);
+  });
+  document.addEventListener("click", e => {
+    if (e.target.id !== "f-phone") return;
+    if (e.target.selectionStart < 5 && e.target.selectionStart === e.target.selectionEnd) e.target.setSelectionRange(5, 5);
   });
 
   document.addEventListener("submit", async e => {
