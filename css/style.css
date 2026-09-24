@@ -31,7 +31,7 @@ button { cursor: pointer; background: none; border: 0; padding: 0; }
 :focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
 [hidden] { display: none !important; }
 
-.wrap { width: 100%; max-width: 1360px; margin: 0 auto; padding-inline: var(--gutter); }
+.wrap { width: 100%; max-width: 1640px; margin: 0 auto; padding-inline: var(--gutter); }
 .muted { color: var(--muted); }
 .small { font-size: 12.5px; }
 .label { font: 600 11px/1 var(--body); letter-spacing: .22em; text-transform: uppercase; margin: 0; }
@@ -75,7 +75,7 @@ button { cursor: pointer; background: none; border: 0; padding: 0; }
 
 /* ---------- hero ---------- */
 .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); background: var(--bg); min-height: 88vh; display: flex; }
-.hero-media { position: absolute; inset: 0; left: 32%; }
+.hero-media { position: absolute; inset: 0; left: 30%; }
 .hero-photo { width: 100%; height: 100%; object-fit: cover; object-position: 50% 8%; filter: grayscale(.2) contrast(1.1) brightness(.92); }
 .hero-fade {
   position: absolute; inset: 0; pointer-events: none;
