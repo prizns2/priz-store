@@ -19,7 +19,7 @@
 
   let cart = store.get("priz_cart", []);   // { id, size, color, qty }
   let wish = store.get("priz_wish", []);   // [id]
-  let pstate = { id: null, color: 0, size: null, qty: 1, sizeGuide: false };
+  let pstate = { id: null, color: 0, gimg: 0, size: null, qty: 1, sizeGuide: false };
 
   /* ---------- компоненты ---------- */
   function heart(id) {
@@ -44,9 +44,9 @@
       p.colors.map(c => `<i style="background:${c.hex}" title="${c.name}"></i>`).join("") + `</span>`;
   }
 
-  function productImage(p, colorIndex, cls) {
+  function productImage(p, colorIndex, cls, imgIndex) {
     if (p.images && p.images.length) {
-      return `<img class="photo ${cls || ""}" src="${esc(p.images[0])}" alt="${esc(p.name)}" loading="lazy">`;
+      return `<img class="photo ${cls || ""}" src="${esc(p.images[imgIndex || 0] || p.images[0])}" alt="${esc(p.name)}" loading="lazy">`;
     }
     return productArt(p, colorIndex, cls);
   }
@@ -181,11 +181,16 @@
   function viewProduct(id) {
     const p = byId(id);
     if (!p) return viewNotFound();
-    if (pstate.id !== id) pstate = { id, color: 0, size: null, qty: 1, sizeGuide: false };
+    if (pstate.id !== id) pstate = { id, color: 0, gimg: 0, size: null, qty: 1, sizeGuide: false };
     const col = p.colors[pstate.color];
     const related = PRODUCTS.filter(x => x.id !== id && (x.cat === p.cat || x.gender === p.gender)).slice(0, 4);
     const gender = { men: "Мужское", women: "Женское", unisex: "Унисекс" }[p.gender];
-    const thumbs = p.colors.map((c, i) => `<button class="thumb ${i === pstate.color ? "on" : ""}" data-action="color" data-i="${i}" aria-label="${c.name}">${productArt(p, i)}</button>`).join("");
+    const gallery = p.images && p.images.length > 1;
+    const thumbs = gallery
+      ? p.images.map((src, i) => `<button class="thumb photo-thumb ${i === pstate.gimg ? "on" : ""}" data-action="gimg" data-i="${i}" aria-label="Фото ${i + 1}"><img src="${esc(src)}" alt="" loading="lazy"></button>`).join("")
+      : p.colors.map((c, i) => `<button class="thumb ${i === pstate.color ? "on" : ""}" data-action="color" data-i="${i}" aria-label="${c.name}">${productArt(p, i)}</button>`).join("");
+    const stageIdx = gallery ? pstate.gimg : pstate.color;
+    const stageTotal = gallery ? p.images.length : p.colors.length;
     return `
     <section class="wrap product">
       <p class="crumbs"><a href="#/">Главная</a> / <a href="#/catalog/${p.cat}">${CATEGORIES[p.cat].title}</a> / <span>${p.name}</span></p>
@@ -193,9 +198,10 @@
         <div class="gallery">
           <div class="thumbs">${thumbs}</div>
           <div class="stage">
-            <span class="stage-count">${String(pstate.color + 1).padStart(2, "0")} / ${String(p.colors.length).padStart(2, "0")}</span>
+            <span class="stage-count">${String(stageIdx + 1).padStart(2, "0")} / ${String(stageTotal).padStart(2, "0")}</span>
             <span class="stage-note" aria-hidden="true">Создано<br>для<br>движения</span>
-            ${productImage(p, pstate.color, "stage-art")}
+            ${gallery ? `<button class="stage-nav prev" data-action="gnav" data-d="-1" aria-label="Предыдущее фото">‹</button><button class="stage-nav next" data-action="gnav" data-d="1" aria-label="Следующее фото">›</button>` : ""}
+            ${productImage(p, pstate.color, "stage-art", stageIdx)}
           </div>
         </div>
         <div class="info">
@@ -244,6 +250,16 @@
       <div class="wrap">
         <div class="section-head"><h2 class="label">Вам может понравиться</h2><a class="link-arrow" href="#/catalog/all">Весь каталог <span aria-hidden="true">→</span></a></div>
         <div class="grid grid-4">${related.map(card).join("")}</div>
+      </div>
+    </section>
+    <section class="banner">
+      <div class="wrap banner-inner">
+        <div class="banner-copy">
+          <p class="eyebrow">PRIZ</p>
+          <h2 class="display sm">Другие<br>ракурсы</h2>
+          <p class="muted">Высокий стандарт.</p>
+          <a class="btn btn-outline" href="#/catalog/all">Смотреть коллекцию <span aria-hidden="true">→</span></a>
+        </div>
       </div>
     </section>`;
   }
@@ -547,6 +563,8 @@
       return;
     }
     if (a === "color") { pstate.color = +el.dataset.i; rerender(); return; }
+    if (a === "gimg") { pstate.gimg = +el.dataset.i; rerender(); return; }
+    if (a === "gnav") { const n = byId(pstate.id).images.length; pstate.gimg = (pstate.gimg + +el.dataset.d + n) % n; rerender(); return; }
     if (a === "pick-size") { pstate.size = el.dataset.size; rerender(); return; }
     if (a === "size-guide") { pstate.sizeGuide = !pstate.sizeGuide; rerender(); return; }
     if (a === "qty") { pstate.qty = Math.max(1, Math.min(20, pstate.qty + +el.dataset.d)); rerender(); return; }

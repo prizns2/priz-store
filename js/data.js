@@ -17,7 +17,7 @@ const PRODUCTS = [
     id: "apex-run-jacket", name: "Куртка Apex Run", kind: "jacket",
     cat: "run", gender: "men", price: 4800, badge: "NEW", isNew: true,
     label: "Верхняя одежда для бега",
-    images: ["img/apex-run-jacket-1.jpg"],
+    images: ["img/apex-run-jacket-1.jpg", "img/apex-run-jacket-2.jpg", "img/apex-run-jacket-3.jpg", "img/apex-run-jacket-4.jpg"],
     colors: [C.black, C.graph, C.bone], sizes: CLOTHING_SIZES,
     desc: "Лёгкая стёганая куртка для утренних пробежек и прохладных вечеров. Держит тепло, не мешает плечам и складывается в рюкзак.",
     materials: "Верх: 100% нейлон, водоотталкивающая пропитка. Утеплитель: 100% полиэстер, 80 г/м². Подкладка: 100% полиэстер.",

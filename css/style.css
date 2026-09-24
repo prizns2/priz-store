@@ -180,6 +180,17 @@ select { background: var(--surface); border: 1px solid var(--line-2); padding: 9
 .thumb:hover { border-color: var(--accent-2); }
 .stage { position: relative; aspect-ratio: 1 / 1.02; background: radial-gradient(60% 55% at 50% 45%, #241f31 0%, #100e15 80%); border: 1px solid var(--line); display: grid; place-items: center; overflow: hidden; }
 .stage-art { width: 88%; max-width: 640px; filter: drop-shadow(0 30px 40px rgba(0,0,0,.55)); }
+.stage-art.photo { width: 100%; max-width: none; height: 100%; object-fit: cover; filter: none; }
+.thumb.photo-thumb { padding: 0; overflow: hidden; }
+.thumb.photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.stage-nav { position: absolute; top: 50%; z-index: 2; width: 34px; height: 34px; margin-top: -17px; border-radius: 50%; border: 1px solid var(--line-2); background: rgba(11,10,15,.6); font-size: 20px; line-height: 1; display: grid; place-items: center; }
+.stage-nav:hover { border-color: var(--accent-2); }
+.stage-nav.prev { left: 14px; }
+.stage-nav.next { right: 14px; }
+.banner { position: relative; border-top: 1px solid var(--line); background: linear-gradient(90deg, var(--bg) 0%, var(--bg) 34%, rgba(11,10,15,.3) 62%, rgba(11,10,15,.15) 100%), url("../img/apex-run-jacket-4.jpg") 70% 22% / cover; }
+.banner-inner { min-height: 380px; display: flex; align-items: center; }
+.banner-copy { max-width: 360px; padding-block: 48px; }
+.banner-copy .muted { margin: 0 0 24px; }
 .stage-count { position: absolute; top: 16px; left: 18px; font: 600 11px/1 var(--body); letter-spacing: .2em; color: var(--accent-2); }
 .stage-note { position: absolute; top: 16px; right: 18px; padding-left: 12px; border-left: 1px solid var(--line-2); font: 500 9px/1.6 var(--body); letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
 .info { display: flex; flex-direction: column; gap: 18px; }
@@ -296,6 +307,7 @@ legend { padding: 0; margin-bottom: 16px; }
   .gallery { grid-template-columns: 1fr; }
   .thumbs { flex-direction: row; order: 2; }
   .thumb { width: 72px; }
+  .banner { background: linear-gradient(90deg, var(--bg) 0%, rgba(11,10,15,.7) 60%, rgba(11,10,15,.35) 100%), url("../img/apex-run-jacket-4.jpg") 70% 22% / cover; }
   .perks-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-row { grid-template-columns: 1fr; }
 }
