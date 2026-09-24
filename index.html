@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRIZ — спортивная одежда</title>
+<meta name="description" content="PRIZ — спортивная одежда для бега и тренировок. Коллекция FW 26.">
+<meta name="theme-color" content="#0b0a0f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- общий градиент для объёма иллюстраций товаров -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="sh" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".14"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".32"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<header class="site-header" id="header">
+  <div class="wrap header-row">
+    <a class="logo" href="#/" aria-label="PRIZ, на главную">PRIZ</a>
+    <nav class="nav" id="nav" aria-label="Основное меню">
+      <a href="#/catalog/new">Новинки</a>
+      <a href="#/catalog/men">Мужское</a>
+      <a href="#/catalog/women">Женское</a>
+      <a href="#/catalog/run">Бег</a>
+      <a href="#/catalog/gym">Зал</a>
+      <a href="#/catalog/acc">Аксессуары</a>
+      <a href="#/catalog/sale" class="nav-sale">Sale</a>
+    </nav>
+    <div class="icons">
+      <button class="icon-btn" data-action="toggle-search" aria-label="Поиск">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      </button>
+      <a class="icon-btn" href="#/wishlist" aria-label="Избранное">
+        <svg viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10A4.2 4.2 0 0 1 12 7.6 4.2 4.2 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg>
+        <span class="badge" id="wish-count" hidden>0</span>
+      </a>
+      <button class="icon-btn" data-action="open-cart" aria-label="Корзина">
+        <svg viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+        <span class="badge" id="cart-count" hidden>0</span>
+      </button>
+      <button class="icon-btn menu-btn" data-action="toggle-menu" aria-label="Меню" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <form class="search-bar" id="search-bar" hidden>
+    <div class="wrap">
+      <input id="search-input" type="search" placeholder="Поиск: куртка, худи, кроссовки" autocomplete="off">
+    </div>
+  </form>
+</header>
+
+<main id="app" tabindex="-1"></main>
+
+<footer class="site-footer">
+  <div class="wrap footer-row">
+    <div>
+      <div class="logo">PRIZ</div>
+      <p class="muted">Спортивная одежда для тех, кто выходит на старт каждый день.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#/catalog/all">Весь каталог</a>
+      <a href="#/catalog/new">Новинки</a>
+      <a href="#/wishlist">Избранное</a>
+    </div>
+    <div class="footer-note muted">Доставка от 1 до 3 дней<br>Обмен и возврат 14 дней<br>© PRIZ 2026</div>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay" hidden></div>
+<aside class="drawer" id="cart-drawer" aria-label="Корзина" aria-hidden="true"></aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
