@@ -368,6 +368,8 @@
       <h1 class="display sm">Спасибо, ${esc(order.name.split(" ")[0])}!</h1>
       <p class="lead">Номер заказа <b>${esc(order.no)}</b>. Мы свяжемся с вами по номеру ${esc(order.phone)} и подтвердим доставку.</p>
       ${order.demo ? `<p class="notice">Демо-режим: заказ сохранён только в этом браузере. Чтобы заказы приходили в базу, подключите Supabase в файле js/config.js.</p>` : ""}
+      ${CFG.TG_USERNAME ? `<p class="muted">Чтобы быстрее согласовать оплату и доставку, напишите нам в Telegram — сообщение с заказом уже подготовлено.</p>
+      <a class="btn btn-primary" href="https://t.me/${esc(CFG.TG_USERNAME)}?text=${encodeURIComponent(order.tgText)}" target="_blank" rel="noopener">Написать в Telegram <span aria-hidden="true">→</span></a> ` : ""}
       <a class="btn btn-outline" href="#/catalog/all">Продолжить покупки</a>
     </div></section>`;
   }
@@ -507,7 +509,15 @@
       all.push({ ...order, items, created_at: new Date().toISOString() });
       store.set("priz_orders", all);
     }
-    return { no, name: data.name, phone: data.phone, demo: !(CFG.SUPABASE_URL && CFG.SUPABASE_KEY) };
+    const deliveryName = { courier: "Курьер", post: "Отделение почты", pickup: "Самовывоз" }[data.delivery] || data.delivery;
+    const lines = items.map(i => `• ${i.product_name}, ${i.color}, ${i.size} × ${i.qty} — ${fmt(i.price * i.qty)}`);
+    const tgText = [
+      `Здравствуйте! Мой заказ ${no}:`, ...lines,
+      `Доставка: ${deliveryName}${data.city ? ", " + data.city : ""}${data.address ? ", " + data.address : ""}`,
+      `Итого: ${fmt(order.total)}`,
+      `${data.name}, ${data.phone}`
+    ].join("\n");
+    return { no, name: data.name, phone: data.phone, tgText, demo: !(CFG.SUPABASE_URL && CFG.SUPABASE_KEY) };
   }
 
   function validate(form) {
