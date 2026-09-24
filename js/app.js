@@ -78,15 +78,15 @@
     const featured = PRODUCTS.filter(p => ["apex-run-jacket", "essentials-hoodie", "utility-jogger", "vortex-runner"].includes(p.id));
     return `
     <section class="hero">
+      <div class="hero-media" aria-hidden="true"><img class="hero-photo" src="img/hero-model.jpg" alt="" loading="lazy"></div>
+      <div class="hero-fade" aria-hidden="true"></div>
       <div class="hero-beam" aria-hidden="true"></div>
-      <div class="hero-word" aria-hidden="true">PRIZ</div>
       <div class="wrap hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">Сильнее с каждым днём</p>
           <h1>Новая<br>коллекция<br><em>FW 26</em></h1>
           <a class="btn btn-ghost" href="#/catalog/new">Смотреть новинки <span aria-hidden="true">→</span></a>
         </div>
-        <div class="hero-art" aria-hidden="true"><img class="hero-photo" src="img/hero-model.jpg" alt="" loading="lazy"></div>
         <div class="hero-side">
           <p class="script">Не просто форма.<br>Новый уровень.</p>
           <div class="hero-mark">PRIZ<span>Люди</span><span>Места</span><span>Подход</span><span>Всегда вперёд</span></div>
